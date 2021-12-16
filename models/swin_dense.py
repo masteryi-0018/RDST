@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 12 11:39:12 2021
+# SwinIR: Image Restoration Using Swin Transformer
+# https://arxiv.org/abs/2108.10257
+# modified from: https://github.com/JingyunLiang/SwinIR
 
-@author: masteryi
-"""
 
 import math
 import torch
@@ -202,7 +200,7 @@ class SwinTransformerBlock(nn.Module):
         assert 0 <= self.shift_size < self.window_size, "shift_size must in 0-window_size"
         
         # dense
-        print(grow_rate, dim*grow_rate)
+        # print(grow_rate, dim*grow_rate)
         self.dense2mlp = nn.Sequential(*[
             nn.Linear(dim*grow_rate, dim),
             nn.GELU()
@@ -425,7 +423,7 @@ class BasicLayer(nn.Module):
                 x = checkpoint.checkpoint(blk, x, x_size)
             else:
                 x = blk(x, x_size)
-                print('stl_', x.shape)
+                # print('stl_', x.shape)
         if self.downsample is not None:
             x = self.downsample(x)
         return self.LFF(x)
@@ -834,11 +832,11 @@ class SwinIR(nn.Module):
         for layer in self.layers:
             x = layer(x, x_size)
             # x = self.patch_unembed(x, x_size)
-            print('layer__', x.shape)
+            # print('layer__', x.shape)
             DTCB_out.append(self.patch_unembed(self.norm(x), x_size))
         
         x = self.GFF(torch.cat(DTCB_out,1))
-        print('GFF', x.shape)
+        # print('GFF', x.shape)
         # 放弃LN
         # x = self.norm(x)  # B L C
         # x = self.patch_unembed(x, x_size)
@@ -925,7 +923,6 @@ def make_swin(no_upsampling=True):
 
 
 if __name__ == '__main__':
-    # 这个hw是怎么选择的？
     height = width = 48
     model = make_swin()
     # print(model)

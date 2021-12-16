@@ -96,8 +96,8 @@ def eval_psnr(loader, model, data_norm=None, eval_type=None, eval_bsize=None,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default='configs/test-swin/test-b100-6.yaml')
-    parser.add_argument('--model', default='save/_train_swin-liif/epoch-best.pth')
+    parser.add_argument('--config', default='configs/test-swin/test-div2k-2.yaml')
+    parser.add_argument('--model', default='H:/spyder/RDST_model/_train_swin-dense-liif-small-df2k/epoch-last.pth')
     parser.add_argument('--gpu', default='0')
     args = parser.parse_args()
 

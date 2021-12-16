@@ -20,7 +20,6 @@
 
         (epoch_val): ; (epoch_save):
 """
-
 import argparse
 import os
 
@@ -49,7 +48,7 @@ def make_data_loader(spec, tag=''):
         log('  {}: shape={}'.format(k, tuple(v.shape)))
 
     loader = DataLoader(dataset, batch_size=spec['batch_size'],
-        shuffle=(tag == 'train'), num_workers=8, pin_memory=True)
+        shuffle=(tag == 'train'), num_workers=0, pin_memory=True)
     return loader
 
 
@@ -211,7 +210,7 @@ def main(config_, save_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default='configs/train-div2k/train_swin-dense-liif.yaml')
+    parser.add_argument('--config', default='configs/train/train_swin-dense-liif.yaml')
     parser.add_argument('--name', default=None)
     parser.add_argument('--tag', default=None)
     parser.add_argument('--gpu', default='0')

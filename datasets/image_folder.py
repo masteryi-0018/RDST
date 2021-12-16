@@ -12,8 +12,6 @@ from torchvision import transforms
 from datasets import register
 
 
-# 静态方法有一个非常明确的用例。当我们需要某些功能而不是对象，而需要完整的类时，我们可以使方法静态化
-# 在静态方法中，我们不需要将self作为第一个参数传递
 @register('image-folder')
 class ImageFolder(Dataset):
 
@@ -92,9 +90,9 @@ class PairedImageFolders(Dataset):
 
 
 if __name__ == '__main__':
-    # 对于配置中的数据集参数，
-    # cache: in_memory 表示预加载到内存中（可能需要大内存，例如 DIV2K 需要约40GB），（亲测约30G）
-    # cache: bin 表示第一次创建二进制文件（在同级文件夹中），
-    # cache: none 表示直接加载。我们可以在运行训练脚本之前根据硬件资源对其进行修改。
+    # 对于配置中的数据集参数：
+    # cache: in_memory 表示预加载到内存中（可能需要大内存，例如 DIV2K 需要约40GB，亲测约30GB）
+    # cache: bin 表示第一次创建二进制文件（在同级文件夹中）
+    # cache: none 表示直接加载。我们可以在运行训练脚本之前根据硬件资源对其进行修改
     dataset = ImageFolder(root_path='F:\DIV2K\DIV2K_train_HR', cache='in_memory')
     print(len(dataset), dataset[0].shape)

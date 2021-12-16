@@ -8,7 +8,7 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-import datasets
+import datasets as datasets
 import models
 import utils
 
@@ -93,7 +93,7 @@ def eval_psnr(loader, model, data_norm=None, eval_type=None, eval_bsize=None,
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', default='configs/test/test-set5-2.yaml')
-    parser.add_argument('--model', default='save/_train_edsr-baseline-liif/epoch-best.pth')
+    parser.add_argument('--model', default='save/_train_edsr-baseline-liif/epoch-last.pth')
     parser.add_argument('--gpu', default='0')
     args = parser.parse_args()
 

@@ -115,7 +115,7 @@ class RDN(nn.Module):
 
 
 @register('rdn')
-def make_rdn(G0=64, RDNkSize=3, RDNconfig='C',
+def make_rdn(G0=64, RDNkSize=3, RDNconfig='B',
              scale=2, no_upsampling=False):
     args = Namespace()
     args.G0 = G0

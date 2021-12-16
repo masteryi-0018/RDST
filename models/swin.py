@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 12 11:39:12 2021
+# SwinIR: Image Restoration Using Swin Transformer
+# https://arxiv.org/abs/2108.10257
+# from: https://github.com/JingyunLiang/SwinIR
 
-@author: masteryi
-"""
 
 import math
 import torch
