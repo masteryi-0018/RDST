@@ -8,3 +8,4 @@ from . import swin
 from . import swin_dense
 from . import swin_dense_nogff
 from . import swin_dense_nolff
+from . import sr_dense

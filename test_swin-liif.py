@@ -12,6 +12,8 @@ import datasets
 import models
 import utils
 
+import numpy as np
+
 
 def batched_predict(model, inp, coord, cell, bsize):
     with torch.no_grad():
@@ -46,16 +48,23 @@ def eval_psnr(loader, model, data_norm=None, eval_type=None, eval_bsize=None,
 
     if eval_type is None:
         metric_fn = utils.calc_psnr
+        ssim_fn = utils.calculate_ssim2
+        
     elif eval_type.startswith('div2k'):
         scale = int(eval_type.split('-')[1])
         metric_fn = partial(utils.calc_psnr, dataset='div2k', scale=scale)
+        ssim_fn = utils.calculate_ssim2
+        
     elif eval_type.startswith('benchmark'):
         scale = int(eval_type.split('-')[1])
         metric_fn = partial(utils.calc_psnr, dataset='benchmark', scale=scale)
+        ssim_fn = utils.calculate_ssim2
+        
     else:
         raise NotImplementedError
 
     val_res = utils.Averager()
+    val_ssim = utils.Averager()
 
     pbar = tqdm(loader, leave=False, desc='val')
     for batch in pbar:
@@ -86,17 +95,31 @@ def eval_psnr(loader, model, data_norm=None, eval_type=None, eval_bsize=None,
         # print('pred shape', pred.shape)
         
         res = metric_fn(pred, batch['gt'])
+        
+        pred = (pred[0]).cpu().numpy()
+        pred = np.transpose(pred[[2, 1, 0], :, :], (1, 2, 0))
+        pred = (pred * 255.0).round().astype(np.uint8)
+        
+        gt = (batch['gt'][0]).cpu().numpy()
+        gt = np.transpose(gt[[2, 1, 0], :, :], (1, 2, 0))
+        gt = (gt * 255.0).round().astype(np.uint8)
+        # print(pred.shape, gt.dtype)
+        
+        ssim = ssim_fn(pred, gt, crop_border=scale, input_order='HWC')
+        
         val_res.add(res.item(), inp.shape[0])
+        val_ssim.add(ssim.item(), inp.shape[0])
 
         if verbose:
-            pbar.set_description('val {:.4f}'.format(val_res.item()))
+            pbar.set_description('psnr val {:.4f}'.format(val_res.item()))
+            pbar.set_description('ssim val {:.4f}'.format(val_ssim.item()))
 
-    return val_res.item()
+    return val_res.item(), val_ssim.item()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default='configs/test-swin/test-div2k-2.yaml')
+    parser.add_argument('--config', default='configs/test-swin/test-set5-2.yaml')
     parser.add_argument('--model', default='H:/spyder/RDST_model/_train_swin-dense-liif-small-df2k/epoch-last.pth')
     parser.add_argument('--gpu', default='0')
     args = parser.parse_args()
@@ -117,9 +140,11 @@ if __name__ == '__main__':
     # model_spec['args']['encoder_spec']
     model = models.make(model_spec, load_sd=True).cuda()
 
-    res = eval_psnr(loader, model,
+    res, ssim = eval_psnr(loader, model,
         data_norm=config.get('data_norm'),
         eval_type=config.get('eval_type'),
         eval_bsize=config.get('eval_bsize'),
         verbose=True)
-    print('result: {:.4f}'.format(res))
+    # print('result psnr: {:.4f}'.format(res))
+    print('result ssim: {:.4f}'.format(ssim))
+    

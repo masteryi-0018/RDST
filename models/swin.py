@@ -877,7 +877,7 @@ def make_swin(no_upsampling=True):
     args.no_upsampling = no_upsampling
     args.img_size = (48, 48)
     return SwinIR(img_size=args.img_size, patch_size=1, in_chans=3, embed_dim=64,
-                 depths=[4,4,4,4], num_heads=[4,4,4,4],
+                 depths=[6,6,6,6,6,6], num_heads=[8,8,8,8,8,8],
                  window_size=8, mlp_ratio=2.,
                  qkv_bias=True, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,

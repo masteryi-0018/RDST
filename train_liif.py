@@ -210,7 +210,7 @@ def main(config_, save_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default='configs/train/train_swin-dense-liif.yaml')
+    parser.add_argument('--config', default='configs/train/train_sr-dense-liif.yaml')
     parser.add_argument('--name', default=None)
     parser.add_argument('--tag', default=None)
     parser.add_argument('--gpu', default='0')
